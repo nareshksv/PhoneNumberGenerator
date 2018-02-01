@@ -1,0 +1,95 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="jquery.twbsPagination.min.js"></script>
+  <title>Pagination for phone number generation </title>
+  
+  
+<script type="text/javascript">
+
+$(function() {
+
+	  $("#myform").submit(function(e) {
+		 e.preventDefault();
+	var $pagination = $('#pagination'),
+		totalRecords = 0,
+		records = [],
+		displayRecords = [],
+		recPerPage = 20,
+		page = 1,
+		totalPages = 0;
+           
+	$.ajax({
+		url: "http://localhost:8080/RESTfulExample/rest/phoneNumber/gen",
+		async: true,
+		type: 'post',
+		dataType: 'json',
+		data: $("#myform").serialize(),
+		success: function (data) {
+			records = data;
+			console.log(records.length);
+			totalRecords = records.length;
+			totalPages = Math.ceil(totalRecords / recPerPage);
+			apply_pagination();
+		}
+	});
+	function generate_table() {
+		var tr;
+		$('#tbl_body').html('');
+		for (var i = 0; i < displayRecords.length; i++) {
+			tr = $('<tr/>');
+			tr.append("<td>" + displayRecords[i] + "</td>");
+			$('#tbl_body').append(tr);
+		}
+	}
+	function apply_pagination() {
+		$pagination.twbsPagination({
+			totalPages: totalPages,
+			visiblePages: 6,
+			onPageClick: function (event, page) {
+				displayRecordsIndex = Math.max(page - 1, 0) * recPerPage;
+				endRec = (displayRecordsIndex) + recPerPage;
+				displayRecords = records.slice(displayRecordsIndex, endRec);			
+				generate_table();
+			}
+		});
+	}
+	  });
+  });
+  //});
+</script>
+</head>
+<body>
+  <div class="container" style="padding:10px 20px;">
+    <h2>Phone number generationn</h1>
+    
+    	<form id="myform" method="post">
+		<p>
+			Phone Number : <input type="text" name="number" />
+		</p>
+		<input type="submit"   value="Generate Numberrs" />
+	</form>
+    
+    
+    
+	<table id="employee" class="table table-bordered table table-hover" cellspacing="0" width="100%">
+		<colgroup><col width="20%"><col width="35%"><col width="40%"></colgroup>
+	<thead>
+		<tr>
+			<th>Number</th>
+				
+		</tr>
+	</thead>
+	<tbody id="tbl_body">
+	</tbody>
+	</table>
+	<div id="pager">
+		<ul id="pagination" class="pagination-sm"></ul>
+	</div>
+  </div>
+</body>
+</html>
+ 
