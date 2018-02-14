@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 
 @Path("/phoneNumber")
 public class JSONService {
@@ -44,12 +47,22 @@ public class JSONService {
 	public List<String> getPhoneNumber(@FormParam("number") String number) {
 		phoneNumberList = new ArrayList<String>();
 		System.out.println("Input Number:" + convertToArray(number));
-		//int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1 };
+		// int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1 };
 		generateNumber(convertToArray(number), 10);
 		System.out.println("phoneNumberList:" + phoneNumberList.size());
 		return phoneNumberList;
 	}
 
+	@GET
+	@Path("/gen/{num}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<String> getPhoneNumbers(@PathParam("num") String num) {
+		phoneNumberList = new ArrayList<String>();
+		generateNumber(convertToArray(num), 10);
+		System.out.println("phoneNumberList:" + phoneNumberList.size());
+		return phoneNumberList;
+
+	}
 
 	void generateNumber(int number[], int n) {
 		String[] result = new String[11];
